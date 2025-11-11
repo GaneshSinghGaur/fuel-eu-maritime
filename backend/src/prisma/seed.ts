@@ -1,0 +1,41 @@
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+async function main() {
+  // Clear existing data safely
+  await prisma.poolMember.deleteMany().catch(() => {});
+  await prisma.pool.deleteMany().catch(() => {});
+  await prisma.bankEntry.deleteMany().catch(() => {});
+  await prisma.shipCompliance.deleteMany().catch(() => {});
+  await prisma.route.deleteMany().catch(() => {});
+
+  // Seed routes
+  const routes = [
+    { routeId: 'R001', vesselType: 'Container', fuelType: 'HFO', year: 2024, ghgIntensity: 91.0, fuelConsumption: 5000, distance: 12000, totalEmissions: 4500 },
+    { routeId: 'R002', vesselType: 'BulkCarrier', fuelType: 'LNG', year: 2024, ghgIntensity: 88.0, fuelConsumption: 4800, distance: 11500, totalEmissions: 4200 },
+    { routeId: 'R003', vesselType: 'Tanker', fuelType: 'MGO', year: 2024, ghgIntensity: 93.5, fuelConsumption: 5100, distance: 12500, totalEmissions: 4700 },
+    { routeId: 'R004', vesselType: 'RoRo', fuelType: 'HFO', year: 2025, ghgIntensity: 89.2, fuelConsumption: 4900, distance: 11800, totalEmissions: 4300 },
+    { routeId: 'R005', vesselType: 'Container', fuelType: 'LNG', year: 2025, ghgIntensity: 90.5, fuelConsumption: 4950, distance: 11900, totalEmissions: 4400 }
+  ];
+  
+  for (const r of routes) {
+    await prisma.route.create({ data: r });
+  }
+
+  // Mark baseline
+  await prisma.route.update({
+    where: { routeId: 'R001' },
+    data: { isBaseline: true },
+  });
+
+  console.log('✅ Seeded routes successfully');
+}
+
+main()
+  .catch((e) => {
+    console.error('❌ Seeding failed:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
