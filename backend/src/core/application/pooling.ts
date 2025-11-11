@@ -1,12 +1,3 @@
-/**
- * greedyPoolAllocation
- * members: { shipId, cb_before }
- * Rules:
- *  - Sum(cb_before) must be >= 0
- *  - Deficit ship cannot exit worse
- *  - Surplus ship cannot exit negative
- * Greedy: sort descending by cb_before, use surplus to cover deficits.
- */
 export type Member = { shipId: string; cb_before: number; cb_after?: number };
 
 export function greedyPoolAllocation(members: Member[]): Member[] {
@@ -14,12 +5,9 @@ export function greedyPoolAllocation(members: Member[]): Member[] {
   if (Math.round(total * 1000) / 1000 < 0) {
     throw new Error('Pool invalid: total CB < 0');
   }
-  // copy and sort
   const sorted = members.map(m => ({ ...m })).sort((a, b) => b.cb_before - a.cb_before);
-  // deficits list (ascending cb_before)
   const deficits = sorted.filter(m => m.cb_before < 0).sort((a, b) => a.cb_before - b.cb_before);
   const surplus = sorted.filter(m => m.cb_before > 0);
-  // apply surplus to deficits greedily
   for (const s of surplus) {
     let available = s.cb_before;
     for (const d of deficits) {
@@ -30,8 +18,7 @@ export function greedyPoolAllocation(members: Member[]): Member[] {
       available -= transfer;
       if (available <= 0) break;
     }
-    s.cb_before = available; // leftover
+    s.cb_before = available;
   }
-  // final cb_after = cb_before (modified)
   return [...sorted.filter(m => m.cb_before >= 0), ...sorted.filter(m => m.cb_before < 0)].map(m => ({ shipId: m.shipId, cb_before: m.cb_before, cb_after: m.cb_before }));
 }

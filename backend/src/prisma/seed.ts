@@ -2,14 +2,12 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Clear existing data safely
   await prisma.poolMember.deleteMany().catch(() => {});
   await prisma.pool.deleteMany().catch(() => {});
   await prisma.bankEntry.deleteMany().catch(() => {});
   await prisma.shipCompliance.deleteMany().catch(() => {});
   await prisma.route.deleteMany().catch(() => {});
 
-  // Seed routes
   const routes = [
     { routeId: 'R001', vesselType: 'Container', fuelType: 'HFO', year: 2024, ghgIntensity: 91.0, fuelConsumption: 5000, distance: 12000, totalEmissions: 4500 },
     { routeId: 'R002', vesselType: 'BulkCarrier', fuelType: 'LNG', year: 2024, ghgIntensity: 88.0, fuelConsumption: 4800, distance: 11500, totalEmissions: 4200 },
@@ -22,7 +20,6 @@ async function main() {
     await prisma.route.create({ data: r });
   }
 
-  // Mark baseline
   await prisma.route.update({
     where: { routeId: 'R001' },
     data: { isBaseline: true },
