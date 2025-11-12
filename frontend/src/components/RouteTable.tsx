@@ -1,4 +1,3 @@
-// src/components/RouteTable.tsx
 import React from "react";
 import { createColumnHelper, useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
 import type { RouteDto } from "../api/routesApi";

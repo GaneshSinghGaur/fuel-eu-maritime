@@ -1,4 +1,3 @@
-// src/api/routesApi.ts
 import axios from "axios";
 
 const client = axios.create({
