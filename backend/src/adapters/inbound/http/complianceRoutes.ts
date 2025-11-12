@@ -4,7 +4,6 @@ import { PrismaClient } from "@prisma/client";
 const router = Router();
 const prisma = new PrismaClient();
 
-// GET /api/compliance
 router.get("/", async (_req, res) => {
   try {
     const routes = await prisma.route.findMany({

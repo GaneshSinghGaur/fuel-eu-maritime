@@ -39,8 +39,6 @@ export class PrismaRouteRepo implements RouteRepo {
     await prisma.route.updateMany({ where: {}, data: { isBaseline: false }});
     await prisma.route.update({ where: { routeId }, data: { isBaseline: true }});
   }
-
-  // New methods below
   async createRoute(data: Omit<Route, 'id'>) {
     const r = await prisma.route.create({ data: {
       routeId: data.routeId,

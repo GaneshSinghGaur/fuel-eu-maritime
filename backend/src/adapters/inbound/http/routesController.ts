@@ -1,13 +1,8 @@
-// backend/src/adapters/inbound/http/routesController.ts
 import { Router } from "express";
 import { prisma } from "../../outbound/postgres/prismaClient";
 
 const router = Router();
 
-/**
- * ✅ GET /routes
- * Get all routes
- */
 router.get("/", async (_req, res) => {
   try {
     const routes = await prisma.route.findMany();
@@ -18,10 +13,6 @@ router.get("/", async (_req, res) => {
   }
 });
 
-/**
- * ✅ GET /routes/comparison
- * Must be defined BEFORE /:routeId or /:routeId/baseline
- */
 router.get("/comparison", async (_req, res) => {
   try {
     const baseline = await prisma.route.findFirst({ where: { isBaseline: true } });
@@ -52,10 +43,6 @@ router.get("/comparison", async (_req, res) => {
   }
 });
 
-/**
- * ✅ POST /routes/:routeId/baseline
- * Must come before /:routeId (to avoid param confusion)
- */
 router.post("/:routeId/baseline", async (req, res) => {
   try {
     const { routeId } = req.params;
@@ -82,10 +69,6 @@ router.post("/:routeId/baseline", async (req, res) => {
   }
 });
 
-/**
- * ✅ GET /routes/:routeId
- * Must be last
- */
 router.get("/:routeId", async (req, res) => {
   try {
     const { routeId } = req.params;
